@@ -38,7 +38,7 @@ I'm glad you asked! `TableView` is great to present data (read [full set of feat
 - **Column Reordering**: Easily reorder columns using intuitive drag-and-drop functionality.
 - **Column Sorting**: Supports data sorting with visual indicators (ascending/descending arrows) in the header.
 - **Customizable Scrollbars**: Fine-tune the visibility, color, and thickness of both vertical and horizontal scrollbars.
-- **Alternating Row Colors**: Apply custom alternating colors to rows for improved readability and aesthetics.
+- **Custom Row Colors**: Apply custom colors to rows for improved readability and aesthetics.
 - **Configurable Borders**: Define custom styles for horizontal and vertical borders between cells.
 - **Auto-fit Column Width**: Double-click a column divider to automatically resize the column to fit its content.
 - **Pinned Header**: An optional header row that remains visible while scrolling vertically through the data (carried over from `TableView`).
