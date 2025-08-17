@@ -15,7 +15,7 @@ import 'extensions/color_extensions.dart';
 // Enum to control the selection behavior of the table.
 enum SelectionType { disabled, row, cell }
 
-typedef AlternatingRowColorProvider = Color Function(int rowIndex);
+typedef RowColorProvider = Color Function(int rowIndex);
 
 /// Extended [TableView] class which provides features:
 /// - Column width change by user
@@ -51,7 +51,7 @@ class ViewOnlyTableViewEx extends StatefulWidget {
 
   /// Optional function to provide alternating row colors.
   /// If not provided, no alternating colors are applied.
-  final AlternatingRowColorProvider? rowBackgroundColorProvider;
+  final RowColorProvider? rowBackgroundColorProvider;
 
   /// The columns of the table.
   /// Each column is defined by an [TableViewExColumnConfig].
