@@ -51,9 +51,9 @@ jobs:
       - name: Analyze
         run: |
           output=$(flutter analyze; exit_code=$?)
-          echo "$output" >> $GITHUB_OUTPUT
+          echo "$output"
           if [ "$exit_code" -ne 0 ]; then
-            echo "Flutter analyze found issues" >> $GITHUB_OUTPUT
+            echo "Flutter analyze found issues"
           fi
           exit 0  # Always exit 0 to prevent job failure
       
