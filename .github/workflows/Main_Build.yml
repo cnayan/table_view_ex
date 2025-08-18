@@ -73,7 +73,7 @@ jobs:
           verbose: true # optional (default = false)
       
       - name: Build Web
-        run: flutter build web
+        run: flutter build web --base-href "./"
         working-directory: ./example
       
       # Your project will need to have tests in test/ and a dependency on
