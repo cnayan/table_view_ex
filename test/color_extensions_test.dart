@@ -31,7 +31,8 @@ void main() {
     test('getContrastColor handles colors near minContrast threshold', () {
       final color = Color(0xFF808080); // Middle grey
       final contrast = color.getContrastColor();
-      expect(((contrast.r * 255).round() - 0x80).abs(), greaterThanOrEqualTo(128));
+      expect(
+          ((contrast.r * 255).round() - 0x80).abs(), greaterThanOrEqualTo(128));
     });
 
     test('getContrastColor clamps output to valid range', () {

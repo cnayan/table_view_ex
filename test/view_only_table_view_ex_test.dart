@@ -115,7 +115,8 @@ void main() {
       ];
     });
 
-    testWidgets('creates widget with required parameters', (WidgetTester tester) async {
+    testWidgets('creates widget with required parameters',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -123,7 +124,8 @@ void main() {
               columnDefinitions: testColumns,
               rowSpanBuilder: (index) => const FixedSpanExtent(50),
               contentRowsCount: 5,
-              contentCellWidgetBuilder: (context, colIndex, rowIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, colIndex, rowIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -135,7 +137,8 @@ void main() {
       expect(find.byType(TableView), findsOneWidget);
     });
 
-    testWidgets('displays header when showHeader is true', (WidgetTester tester) async {
+    testWidgets('displays header when showHeader is true',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -144,7 +147,8 @@ void main() {
               rowSpanBuilder: (index) => const FixedSpanExtent(50),
               contentRowsCount: 5,
               showHeader: true,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -158,7 +162,8 @@ void main() {
       expect(find.byType(GestureDetector), findsWidgets);
     });
 
-    testWidgets('handles sort request when header is tapped', (WidgetTester tester) async {
+    testWidgets('handles sort request when header is tapped',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -167,7 +172,8 @@ void main() {
               rowSpanBuilder: (index) => const FixedSpanExtent(50),
               contentRowsCount: 5,
               showHeader: true,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -185,7 +191,8 @@ void main() {
       expect(sortRequestedColumn, equals(0));
     });
 
-    testWidgets('applies row background colors when provider is given', (WidgetTester tester) async {
+    testWidgets('applies row background colors when provider is given',
+        (WidgetTester tester) async {
       Color rowColorProvider(int rowIndex) {
         return rowIndex % 2 == 0 ? Colors.grey[100]! : Colors.white;
       }
@@ -198,7 +205,8 @@ void main() {
               rowSpanBuilder: (index) => const FixedSpanExtent(50),
               contentRowsCount: 5,
               rowBackgroundColorProvider: rowColorProvider,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -210,7 +218,8 @@ void main() {
       expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
     });
 
-    testWidgets('shows scrollbars when visibility is enabled', (WidgetTester tester) async {
+    testWidgets('shows scrollbars when visibility is enabled',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -223,7 +232,8 @@ void main() {
                 contentRowsCount: 10,
                 verticalThumbVisibility: true,
                 horizontalThumbVisibility: true,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -238,7 +248,8 @@ void main() {
       expect(find.byType(RawScrollbar), findsWidgets);
     });
 
-    testWidgets('hides scrollbars when visibility is false', (WidgetTester tester) async {
+    testWidgets('hides scrollbars when visibility is false',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -248,7 +259,8 @@ void main() {
               contentRowsCount: 5,
               verticalThumbVisibility: false,
               horizontalThumbVisibility: false,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -262,7 +274,9 @@ void main() {
       expect(find.byType(RawScrollbar), findsNothing);
     });
 
-    testWidgets('enables column width resizing when enableColumnWidthResize is true', (WidgetTester tester) async {
+    testWidgets(
+        'enables column width resizing when enableColumnWidthResize is true',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -272,7 +286,8 @@ void main() {
               contentRowsCount: 5,
               showHeader: true,
               enableColumnWidthResize: true,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -286,7 +301,8 @@ void main() {
       expect(find.byType(MouseRegion), findsWidgets);
     });
 
-    testWidgets('displays sort indicators correctly', (WidgetTester tester) async {
+    testWidgets('displays sort indicators correctly',
+        (WidgetTester tester) async {
       // Set up a column with initial ascending sort
       testColumns[0].isAscending = true;
 
@@ -298,7 +314,8 @@ void main() {
               rowSpanBuilder: (index) => const FixedSpanExtent(50),
               contentRowsCount: 5,
               showHeader: true,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -319,7 +336,8 @@ void main() {
       }
     });
 
-    testWidgets('handles column reordering when allowColumnReordering is true', (WidgetTester tester) async {
+    testWidgets('handles column reordering when allowColumnReordering is true',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -329,7 +347,8 @@ void main() {
               contentRowsCount: 5,
               showHeader: true,
               allowColumnReordering: true,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -344,7 +363,8 @@ void main() {
       expect(find.byType(DragTarget<int>), findsWidgets);
     });
 
-    testWidgets('applies custom scroll properties', (WidgetTester tester) async {
+    testWidgets('applies custom scroll properties',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -356,7 +376,8 @@ void main() {
               scrollThumbThickness: 10,
               verticalThumbVisibility: true,
               horizontalThumbVisibility: true,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -368,7 +389,8 @@ void main() {
       expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
     });
 
-    testWidgets('handles content max width provider', (WidgetTester tester) async {
+    testWidgets('handles content max width provider',
+        (WidgetTester tester) async {
       double contentMaxWidthProvider(int colIndex) {
         return 200.0; // Fixed width for testing
       }
@@ -383,7 +405,8 @@ void main() {
               showHeader: true,
               enableColumnWidthResize: true,
               contentMaxWidthProvider: contentMaxWidthProvider,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -395,7 +418,8 @@ void main() {
       expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
     });
 
-    testWidgets('handles column width drag gestures', (WidgetTester tester) async {
+    testWidgets('handles column width drag gestures',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -408,7 +432,8 @@ void main() {
                 contentRowsCount: 5,
                 showHeader: true,
                 enableColumnWidthResize: true,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -438,7 +463,8 @@ void main() {
       expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
     });
 
-    testWidgets('handles double tap on resize handle for auto-sizing', (WidgetTester tester) async {
+    testWidgets('handles double tap on resize handle for auto-sizing',
+        (WidgetTester tester) async {
       bool contentExpanded = false;
       double contentMaxWidthProvider(int colIndex) {
         contentExpanded = true;
@@ -458,7 +484,8 @@ void main() {
                 showHeader: true,
                 enableColumnWidthResize: true,
                 contentMaxWidthProvider: contentMaxWidthProvider,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -485,7 +512,8 @@ void main() {
       expect(true, contentExpanded);
     });
 
-    testWidgets('handles drag cancellation during resize', (WidgetTester tester) async {
+    testWidgets('handles drag cancellation during resize',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -498,7 +526,8 @@ void main() {
                 contentRowsCount: 5,
                 showHeader: true,
                 enableColumnWidthResize: true,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -515,7 +544,8 @@ void main() {
         final resizeHandle = mouseRegions.first;
 
         // Start drag then cancel
-        final gesture = await tester.startGesture(tester.getCenter(resizeHandle));
+        final gesture =
+            await tester.startGesture(tester.getCenter(resizeHandle));
         await tester.pump();
         await gesture.cancel();
         await tester.pump();
@@ -524,7 +554,8 @@ void main() {
       expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
     });
 
-    testWidgets('toggles sort direction on repeated header taps', (WidgetTester tester) async {
+    testWidgets('toggles sort direction on repeated header taps',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -533,7 +564,8 @@ void main() {
               rowSpanBuilder: (index) => const FixedSpanExtent(50),
               contentRowsCount: 5,
               showHeader: true,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -562,7 +594,8 @@ void main() {
       }
     });
 
-    testWidgets('applies borders correctly based on configuration', (WidgetTester tester) async {
+    testWidgets('applies borders correctly based on configuration',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -570,9 +603,12 @@ void main() {
               columnDefinitions: testColumns,
               rowSpanBuilder: (index) => const FixedSpanExtent(50),
               contentRowsCount: 3,
-              horizontalBorderSide: const BorderSide(color: Colors.red, width: 2),
-              verticalBorderSide: const BorderSide(color: Colors.blue, width: 1),
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              horizontalBorderSide:
+                  const BorderSide(color: Colors.red, width: 2),
+              verticalBorderSide:
+                  const BorderSide(color: Colors.blue, width: 1),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -584,7 +620,8 @@ void main() {
       expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
     });
 
-    testWidgets('handles partial scrollbar visibility configurations', (WidgetTester tester) async {
+    testWidgets('handles partial scrollbar visibility configurations',
+        (WidgetTester tester) async {
       // Test only vertical scrollbar visible
       await tester.pumpWidget(
         MaterialApp(
@@ -595,7 +632,8 @@ void main() {
               contentRowsCount: 5,
               verticalThumbVisibility: true,
               horizontalThumbVisibility: false,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -616,7 +654,8 @@ void main() {
               contentRowsCount: 5,
               verticalThumbVisibility: false,
               horizontalThumbVisibility: true,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -628,7 +667,8 @@ void main() {
       expect(find.byType(RawScrollbar), findsWidgets);
     });
 
-    testWidgets('handles column drag and drop operations', (WidgetTester tester) async {
+    testWidgets('handles column drag and drop operations',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -641,7 +681,8 @@ void main() {
                 contentRowsCount: 5,
                 showHeader: true,
                 allowColumnReordering: true,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -656,7 +697,8 @@ void main() {
       final dragTargets = find.byType(DragTarget<int>);
       final draggables = find.byType(Draggable<int>);
 
-      if (dragTargets.evaluate().isNotEmpty && draggables.evaluate().isNotEmpty) {
+      if (dragTargets.evaluate().isNotEmpty &&
+          draggables.evaluate().isNotEmpty) {
         // Simulate drag from first column to second column
         await tester.drag(draggables.first, const Offset(100, 0));
         await tester.pump();
@@ -665,7 +707,8 @@ void main() {
       expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
     });
 
-    testWidgets('respects minimum column width during resize', (WidgetTester tester) async {
+    testWidgets('respects minimum column width during resize',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -678,7 +721,8 @@ void main() {
                 contentRowsCount: 5,
                 showHeader: true,
                 enableColumnWidthResize: true,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -692,14 +736,16 @@ void main() {
       // Find resize handle and drag it to make column very small (should respect minWidth)
       final mouseRegions = find.byType(MouseRegion);
       if (mouseRegions.evaluate().isNotEmpty) {
-        await tester.drag(mouseRegions.first, const Offset(-500, 0)); // Large negative drag
+        await tester.drag(
+            mouseRegions.first, const Offset(-500, 0)); // Large negative drag
         await tester.pump();
       }
 
       expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
     });
 
-    testWidgets('handles header with custom widget builder', (WidgetTester tester) async {
+    testWidgets('handles header with custom widget builder',
+        (WidgetTester tester) async {
       final customColumns = [
         TestTableViewExColumnConfig(
           key: 'custom_column',
@@ -717,7 +763,8 @@ void main() {
               rowSpanBuilder: (index) => const FixedSpanExtent(50),
               contentRowsCount: 5,
               showHeader: true,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -729,7 +776,8 @@ void main() {
       expect(find.byIcon(Icons.star), findsOneWidget);
     });
 
-    testWidgets('handles header with custom style', (WidgetTester tester) async {
+    testWidgets('handles header with custom style',
+        (WidgetTester tester) async {
       final styledColumns = [
         TestTableViewExColumnConfig(
           key: 'styled_column',
@@ -752,7 +800,8 @@ void main() {
               rowSpanBuilder: (index) => const FixedSpanExtent(50),
               contentRowsCount: 5,
               showHeader: true,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -764,15 +813,19 @@ void main() {
       expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
     });
 
-    testWidgets('handles different row span extents', (WidgetTester tester) async {
+    testWidgets('handles different row span extents',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: ViewOnlyTableViewEx(
               columnDefinitions: testColumns,
-              rowSpanBuilder: (index) => index == 0 ? const FixedSpanExtent(80) : const FixedSpanExtent(50),
+              rowSpanBuilder: (index) => index == 0
+                  ? const FixedSpanExtent(80)
+                  : const FixedSpanExtent(50),
               contentRowsCount: 5,
-              contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+              contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                  Text('Cell $rowIndex-$colIndex'),
               onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
               columnWidthCalculator: mockCalculator,
             ),
@@ -784,7 +837,8 @@ void main() {
       expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
     });
 
-    testWidgets('handles sorted column index adjustment during reordering', (WidgetTester tester) async {
+    testWidgets('handles sorted column index adjustment during reordering',
+        (WidgetTester tester) async {
       // Set up initial sort on first column
       testColumns[0].isAscending = true;
 
@@ -800,7 +854,8 @@ void main() {
                 contentRowsCount: 5,
                 showHeader: true,
                 allowColumnReordering: true,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -822,7 +877,8 @@ void main() {
       final dragTargets = find.byType(DragTarget<int>);
       final draggables = find.byType(Draggable<int>);
 
-      if (dragTargets.evaluate().isNotEmpty && draggables.evaluate().isNotEmpty) {
+      if (dragTargets.evaluate().isNotEmpty &&
+          draggables.evaluate().isNotEmpty) {
         await tester.drag(draggables.first, const Offset(100, 0));
         await tester.pump();
       }
@@ -839,7 +895,8 @@ void main() {
                 columnDefinitions: testColumns,
                 rowSpanBuilder: (index) => const FixedSpanExtent(50),
                 contentRowsCount: 0,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -861,7 +918,8 @@ void main() {
                 columnDefinitions: singleColumn,
                 rowSpanBuilder: (index) => const FixedSpanExtent(50),
                 contentRowsCount: 5,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -873,7 +931,8 @@ void main() {
         expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
       });
 
-      testWidgets('handles column without comparer (no sorting)', (WidgetTester tester) async {
+      testWidgets('handles column without comparer (no sorting)',
+          (WidgetTester tester) async {
         final columnsWithoutComparer = [
           TestTableViewExColumnConfig(
             key: 'no_sort_column',
@@ -891,7 +950,8 @@ void main() {
                 rowSpanBuilder: (index) => const FixedSpanExtent(50),
                 contentRowsCount: 5,
                 showHeader: true,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -912,7 +972,8 @@ void main() {
         }
       });
 
-      testWidgets('handles null contentMaxWidthProvider during double tap', (WidgetTester tester) async {
+      testWidgets('handles null contentMaxWidthProvider during double tap',
+          (WidgetTester tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -926,7 +987,8 @@ void main() {
                   showHeader: true,
                   enableColumnWidthResize: true,
                   // contentMaxWidthProvider is null
-                  contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                  contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                      Text('Cell $rowIndex-$colIndex'),
                   onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                   columnWidthCalculator: mockCalculator,
                 ),
@@ -953,7 +1015,8 @@ void main() {
         expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
       });
 
-      testWidgets('prevents reordering during resize operation', (WidgetTester tester) async {
+      testWidgets('prevents reordering during resize operation',
+          (WidgetTester tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -967,7 +1030,8 @@ void main() {
                   showHeader: true,
                   allowColumnReordering: true,
                   enableColumnWidthResize: true,
-                  contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                  contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                      Text('Cell $rowIndex-$colIndex'),
                   onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                   columnWidthCalculator: mockCalculator,
                 ),
@@ -997,7 +1061,8 @@ void main() {
     });
 
     group('Internal Methods Coverage', () {
-      testWidgets('tests _createInternalLineBorder method thoroughly', (WidgetTester tester) async {
+      testWidgets('tests _createInternalLineBorder method thoroughly',
+          (WidgetTester tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -1005,13 +1070,16 @@ void main() {
                 columnDefinitions: testColumns,
                 rowSpanBuilder: (index) => const FixedSpanExtent(50),
                 contentRowsCount: 3,
-                horizontalBorderSide: const BorderSide(color: Colors.red, width: 2),
-                verticalBorderSide: const BorderSide(color: Colors.blue, width: 1),
+                horizontalBorderSide:
+                    const BorderSide(color: Colors.red, width: 2),
+                verticalBorderSide:
+                    const BorderSide(color: Colors.blue, width: 1),
                 contentCellWidgetBuilder: (context, rowIndex, colIndex) {
                   // This will trigger _createInternalLineBorder for different positions
                   return Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.green), // Will be overridden
+                      border:
+                          Border.all(color: Colors.green), // Will be overridden
                     ),
                     child: Text('Cell $rowIndex-$colIndex'),
                   );
@@ -1029,7 +1097,8 @@ void main() {
         expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
       });
 
-      testWidgets('tests different scrollbar padding configurations', (WidgetTester tester) async {
+      testWidgets('tests different scrollbar padding configurations',
+          (WidgetTester tester) async {
         // Test with null thickness
         await tester.pumpWidget(
           MaterialApp(
@@ -1041,7 +1110,8 @@ void main() {
                 scrollThumbThickness: null, // This should be handled
                 verticalThumbVisibility: true,
                 horizontalThumbVisibility: true,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -1053,7 +1123,8 @@ void main() {
         expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
       });
 
-      testWidgets('tests layout builder constraints', (WidgetTester tester) async {
+      testWidgets('tests layout builder constraints',
+          (WidgetTester tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -1064,7 +1135,8 @@ void main() {
                   columnDefinitions: testColumns,
                   rowSpanBuilder: (index) => const FixedSpanExtent(50),
                   contentRowsCount: 5,
-                  contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                  contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                      Text('Cell $rowIndex-$colIndex'),
                   onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                   columnWidthCalculator: mockCalculator,
                 ),
@@ -1077,7 +1149,8 @@ void main() {
         expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
       });
 
-      testWidgets('tests header cell color contrast calculation', (WidgetTester tester) async {
+      testWidgets('tests header cell color contrast calculation',
+          (WidgetTester tester) async {
         final darkBackgroundColumn = [
           TestTableViewExColumnConfig(
             key: 'dark_header',
@@ -1099,7 +1172,8 @@ void main() {
                 rowSpanBuilder: (index) => const FixedSpanExtent(50),
                 contentRowsCount: 5,
                 showHeader: true,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -1119,7 +1193,8 @@ void main() {
         expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
       });
 
-      testWidgets('tests column width calculation edge cases', (WidgetTester tester) async {
+      testWidgets('tests column width calculation edge cases',
+          (WidgetTester tester) async {
         // Create a custom calculator that returns specific widths
         final customCalculator = MockTableViewExWidthCalculator();
 
@@ -1132,8 +1207,10 @@ void main() {
                     columnDefinitions: testColumns,
                     rowSpanBuilder: (index) => const FixedSpanExtent(50),
                     contentRowsCount: 5,
-                    contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
-                    onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
+                    contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                        Text('Cell $rowIndex-$colIndex'),
+                    onSortRequested: (colIndex) =>
+                        sortRequestedColumn = colIndex,
                     columnWidthCalculator: customCalculator,
                   );
                 },
@@ -1148,7 +1225,8 @@ void main() {
     });
 
     group('Comprehensive Gesture Testing', () {
-      testWidgets('tests all drag gesture states during column resize', (WidgetTester tester) async {
+      testWidgets('tests all drag gesture states during column resize',
+          (WidgetTester tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -1161,7 +1239,8 @@ void main() {
                   contentRowsCount: 5,
                   showHeader: true,
                   enableColumnWidthResize: true,
-                  contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                  contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                      Text('Cell $rowIndex-$colIndex'),
                   onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                   columnWidthCalculator: mockCalculator,
                 ),
@@ -1198,7 +1277,8 @@ void main() {
         expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
       });
 
-      testWidgets('tests mouse cursor changes during resize', (WidgetTester tester) async {
+      testWidgets('tests mouse cursor changes during resize',
+          (WidgetTester tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -1211,7 +1291,8 @@ void main() {
                   contentRowsCount: 5,
                   showHeader: true,
                   enableColumnWidthResize: true,
-                  contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                  contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                      Text('Cell $rowIndex-$colIndex'),
                   onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                   columnWidthCalculator: mockCalculator,
                 ),
@@ -1222,21 +1303,26 @@ void main() {
 
         await tester.pump();
 
-        final mouseRegions = tester.widgetList<MouseRegion>(find.byType(MouseRegion));
-        final resizeMouseRegions = mouseRegions.where((region) => region.cursor == SystemMouseCursors.resizeLeftRight);
+        final mouseRegions =
+            tester.widgetList<MouseRegion>(find.byType(MouseRegion));
+        final resizeMouseRegions = mouseRegions.where(
+            (region) => region.cursor == SystemMouseCursors.resizeLeftRight);
 
-        expect(resizeMouseRegions.length, equals(testColumns.length)); // One per column
+        expect(resizeMouseRegions.length,
+            equals(testColumns.length)); // One per column
       });
     });
 
     group('Assertions', () {
-      testWidgets('throws assertion error for empty column definitions', (WidgetTester tester) async {
+      testWidgets('throws assertion error for empty column definitions',
+          (WidgetTester tester) async {
         expect(
           () => ViewOnlyTableViewEx(
             columnDefinitions: [], // Empty list
             rowSpanBuilder: (index) => const FixedSpanExtent(50),
             contentRowsCount: 5,
-            contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+            contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                Text('Cell $rowIndex-$colIndex'),
             onSortRequested: (colIndex) {},
             columnWidthCalculator: mockCalculator,
           ),
@@ -1244,13 +1330,15 @@ void main() {
         );
       });
 
-      testWidgets('throws assertion error for negative row count', (WidgetTester tester) async {
+      testWidgets('throws assertion error for negative row count',
+          (WidgetTester tester) async {
         expect(
           () => ViewOnlyTableViewEx(
             columnDefinitions: testColumns,
             rowSpanBuilder: (index) => const FixedSpanExtent(50),
             contentRowsCount: -1, // Negative count
-            contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+            contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                Text('Cell $rowIndex-$colIndex'),
             onSortRequested: (colIndex) {},
             columnWidthCalculator: mockCalculator,
           ),
@@ -1258,7 +1346,8 @@ void main() {
         );
       });
 
-      testWidgets('validates calculated column widths match column count', (WidgetTester tester) async {
+      testWidgets('validates calculated column widths match column count',
+          (WidgetTester tester) async {
         // This test ensures the assertion in build method is covered
         await tester.pumpWidget(
           MaterialApp(
@@ -1267,7 +1356,8 @@ void main() {
                 columnDefinitions: testColumns,
                 rowSpanBuilder: (index) => const FixedSpanExtent(50),
                 contentRowsCount: 5,
-                contentCellWidgetBuilder: (context, rowIndex, colIndex) => Text('Cell $rowIndex-$colIndex'),
+                contentCellWidgetBuilder: (context, rowIndex, colIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
                 onSortRequested: (colIndex) => sortRequestedColumn = colIndex,
                 columnWidthCalculator: mockCalculator,
               ),
@@ -1301,9 +1391,11 @@ void main() {
             columnDefinitions: columns,
             rowSpanBuilder: (i) => FixedSpanExtent(40),
             contentRowsCount: rows,
-            contentCellWidgetBuilder: (ctx, col, row) => Text('r${row}_c$col', textDirection: TextDirection.ltr),
+            contentCellWidgetBuilder: (ctx, col, row) =>
+                Text('r${row}_c$col', textDirection: TextDirection.ltr),
             onSortRequested: onSortRequested,
-            columnWidthCalculator: calculator ?? MockTableViewExWidthCalculator(),
+            columnWidthCalculator:
+                calculator ?? MockTableViewExWidthCalculator(),
             showHeader: showHeader,
             rowBackgroundColorProvider: rowColorProvider,
             verticalThumbVisibility: verticalThumbVisibility,
@@ -1318,7 +1410,8 @@ void main() {
   }
 
   group('ViewOnlyTableViewEx behavior tests', () {
-    testWidgets('throws assertion when columnDefinitions is empty', (WidgetTester tester) async {
+    testWidgets('throws assertion when columnDefinitions is empty',
+        (WidgetTester tester) async {
       // The assertion fires when the widget is constructed (synchronously),
       // so assert on construction rather than on pumpWidget.
       expect(
@@ -1334,18 +1427,22 @@ void main() {
       );
     });
 
-    testWidgets('renders header widgets and responds to taps to trigger sort callback and toggle icon', (WidgetTester tester) async {
+    testWidgets(
+        'renders header widgets and responds to taps to trigger sort callback and toggle icon',
+        (WidgetTester tester) async {
       int lastSort = -1;
 
       final cols = [
         TestTableViewExColumnConfig(
           key: 'c1',
-          widgetBuilder: () => const Text('column1 header', textDirection: TextDirection.ltr),
+          widgetBuilder: () =>
+              const Text('column1 header', textDirection: TextDirection.ltr),
           comparer: (a, b) => 0,
         ),
         TestTableViewExColumnConfig(
           key: 'c2',
-          widgetBuilder: () => const Text('column2 header', textDirection: TextDirection.ltr),
+          widgetBuilder: () =>
+              const Text('column2 header', textDirection: TextDirection.ltr),
         ),
       ];
 
@@ -1371,15 +1468,18 @@ void main() {
       expect(find.byIcon(Icons.arrow_downward), findsOneWidget);
     });
 
-    testWidgets('applies alternating row background colors from provider', (WidgetTester tester) async {
+    testWidgets('applies alternating row background colors from provider',
+        (WidgetTester tester) async {
       final cols = [
         TestTableViewExColumnConfig(
           key: 'c1',
-          widgetBuilder: () => const Text('H1', textDirection: TextDirection.ltr),
+          widgetBuilder: () =>
+              const Text('H1', textDirection: TextDirection.ltr),
         ),
       ];
 
-      Color provider(int rowIndex) => rowIndex % 2 == 0 ? Colors.red : Colors.blue;
+      Color provider(int rowIndex) =>
+          rowIndex % 2 == 0 ? Colors.red : Colors.blue;
 
       await pumpTable(
         tester,
@@ -1419,15 +1519,18 @@ void main() {
       expect([Colors.red, Colors.blue].contains(color1), isTrue);
     });
 
-    testWidgets('honors scrollbar visibility flags', (WidgetTester tester) async {
+    testWidgets('honors scrollbar visibility flags',
+        (WidgetTester tester) async {
       final cols = [
         TestTableViewExColumnConfig(
           key: 'c1',
-          widgetBuilder: () => const Text('H1', textDirection: TextDirection.ltr),
+          widgetBuilder: () =>
+              const Text('H1', textDirection: TextDirection.ltr),
         ),
         TestTableViewExColumnConfig(
           key: 'c2',
-          widgetBuilder: () => const Text('H2', textDirection: TextDirection.ltr),
+          widgetBuilder: () =>
+              const Text('H2', textDirection: TextDirection.ltr),
         ),
       ];
 
@@ -1450,10 +1553,18 @@ void main() {
       expect(find.byType(RawScrollbar), findsWidgets);
     });
 
-    testWidgets('exposes drag related widgets when column reordering is allowed', (WidgetTester tester) async {
+    testWidgets(
+        'exposes drag related widgets when column reordering is allowed',
+        (WidgetTester tester) async {
       final cols = [
-        TestTableViewExColumnConfig(key: 'c1', widgetBuilder: () => const Text('H1', textDirection: TextDirection.ltr)),
-        TestTableViewExColumnConfig(key: 'c2', widgetBuilder: () => const Text('H2', textDirection: TextDirection.ltr)),
+        TestTableViewExColumnConfig(
+            key: 'c1',
+            widgetBuilder: () =>
+                const Text('H1', textDirection: TextDirection.ltr)),
+        TestTableViewExColumnConfig(
+            key: 'c2',
+            widgetBuilder: () =>
+                const Text('H2', textDirection: TextDirection.ltr)),
       ];
 
       await pumpTable(tester, columns: cols, rows: 2);
@@ -1462,11 +1573,18 @@ void main() {
       expect(find.byType(DragTarget<int>), findsWidgets);
     });
 
-    testWidgets('uses width calculator to set initial column widths', (WidgetTester tester) async {
+    testWidgets('uses width calculator to set initial column widths',
+        (WidgetTester tester) async {
       final customCalc = MockTableViewExWidthCalculator();
       final cols = [
-        TestTableViewExColumnConfig(key: 'c1', widgetBuilder: () => const Text('H1', textDirection: TextDirection.ltr)),
-        TestTableViewExColumnConfig(key: 'c2', widgetBuilder: () => const Text('H2', textDirection: TextDirection.ltr)),
+        TestTableViewExColumnConfig(
+            key: 'c1',
+            widgetBuilder: () =>
+                const Text('H1', textDirection: TextDirection.ltr)),
+        TestTableViewExColumnConfig(
+            key: 'c2',
+            widgetBuilder: () =>
+                const Text('H2', textDirection: TextDirection.ltr)),
       ];
 
       await pumpTable(tester, columns: cols, rows: 1, calculator: customCalc);

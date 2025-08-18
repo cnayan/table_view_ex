@@ -6,7 +6,7 @@ void main() {
   group('TableViewExHeaderStyle', () {
     test('should create with default values', () {
       final style = TableViewExHeaderStyle();
-      
+
       expect(style.backgroundColor, isNull);
       expect(style.height, isNull);
       expect(style.textAlignment, equals(Alignment.centerLeft));
@@ -26,7 +26,7 @@ void main() {
 
     test('should create with only height', () {
       final style = TableViewExHeaderStyle(height: 60.0);
-      
+
       expect(style.height, equals(60.0));
       expect(style.backgroundColor, isNull);
       expect(style.textAlignment, equals(Alignment.centerLeft));
@@ -34,15 +34,16 @@ void main() {
 
     test('should create with only backgroundColor', () {
       final style = TableViewExHeaderStyle(backgroundColor: Colors.red);
-      
+
       expect(style.backgroundColor, equals(Colors.red));
       expect(style.height, isNull);
       expect(style.textAlignment, equals(Alignment.centerLeft));
     });
 
     test('should create with only textAlignment', () {
-      final style = TableViewExHeaderStyle(textAlignment: Alignment.centerRight);
-      
+      final style =
+          TableViewExHeaderStyle(textAlignment: Alignment.centerRight);
+
       expect(style.textAlignment, equals(Alignment.centerRight));
       expect(style.backgroundColor, isNull);
       expect(style.height, isNull);
@@ -53,7 +54,7 @@ void main() {
         height: 40.0,
         backgroundColor: Colors.green,
       );
-      
+
       expect(style.height, equals(40.0));
       expect(style.backgroundColor, equals(Colors.green));
       expect(style.textAlignment, equals(Alignment.centerLeft));
@@ -64,7 +65,7 @@ void main() {
         backgroundColor: Colors.yellow,
         textAlignment: Alignment.topCenter,
       );
-      
+
       expect(style.backgroundColor, equals(Colors.yellow));
       expect(style.textAlignment, equals(Alignment.topCenter));
       expect(style.height, isNull);

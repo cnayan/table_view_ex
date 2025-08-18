@@ -73,9 +73,12 @@ void main() {
 
     test('respects fixed width columns', () {
       final columns = [
-        TestTableViewExColumnConfig(key: 'col1', horizontalSpan: FixedSpanExtent(150)),
-        TestTableViewExColumnConfig(key: 'col2', horizontalSpan: FixedSpanExtent(75)),
-        TestTableViewExColumnConfig(key: 'col3', horizontalSpan: FixedSpanExtent(75)),
+        TestTableViewExColumnConfig(
+            key: 'col1', horizontalSpan: FixedSpanExtent(150)),
+        TestTableViewExColumnConfig(
+            key: 'col2', horizontalSpan: FixedSpanExtent(75)),
+        TestTableViewExColumnConfig(
+            key: 'col3', horizontalSpan: FixedSpanExtent(75)),
       ];
       final widths = calculator.calculateColumnWidths(300, columns);
       expect(widths, [150, 75, 75]);
@@ -83,8 +86,10 @@ void main() {
 
     test('handles case where fixed widths exceed available width', () {
       final columns = [
-        TestTableViewExColumnConfig(key: 'col1', horizontalSpan: FixedSpanExtent(200)),
-        TestTableViewExColumnConfig(key: 'col2', horizontalSpan: FixedSpanExtent(200)),
+        TestTableViewExColumnConfig(
+            key: 'col1', horizontalSpan: FixedSpanExtent(200)),
+        TestTableViewExColumnConfig(
+            key: 'col2', horizontalSpan: FixedSpanExtent(200)),
       ];
       final widths = calculator.calculateColumnWidths(300, columns);
       expect(widths, [200, 200]);
@@ -92,10 +97,14 @@ void main() {
 
     test('distributes remaining width to non-fixed columns', () {
       final columns = [
-        TestTableViewExColumnConfig(key: 'col1', horizontalSpan: FractionalSpanExtent(.3)),
-        TestTableViewExColumnConfig(key: 'col2', horizontalSpan: FractionalSpanExtent(.5)),
-        TestTableViewExColumnConfig(key: 'col3', horizontalSpan: RemainingSpanExtent()),
-        TestTableViewExColumnConfig(key: 'col3', horizontalSpan: RemainingSpanExtent()),
+        TestTableViewExColumnConfig(
+            key: 'col1', horizontalSpan: FractionalSpanExtent(.3)),
+        TestTableViewExColumnConfig(
+            key: 'col2', horizontalSpan: FractionalSpanExtent(.5)),
+        TestTableViewExColumnConfig(
+            key: 'col3', horizontalSpan: RemainingSpanExtent()),
+        TestTableViewExColumnConfig(
+            key: 'col3', horizontalSpan: RemainingSpanExtent()),
       ];
       final widths = calculator.calculateColumnWidths(300, columns);
       expect(widths, [90, 150, 30, 30]);
@@ -103,9 +112,12 @@ void main() {
 
     test('distributes fractional %ages width columns', () {
       final columns = [
-        TestTableViewExColumnConfig(key: 'col1', horizontalSpan: FractionalSpanExtent(.3)),
-        TestTableViewExColumnConfig(key: 'col2', horizontalSpan: FractionalSpanExtent(.5)),
-        TestTableViewExColumnConfig(key: 'col3', horizontalSpan: FractionalSpanExtent(.2)),
+        TestTableViewExColumnConfig(
+            key: 'col1', horizontalSpan: FractionalSpanExtent(.3)),
+        TestTableViewExColumnConfig(
+            key: 'col2', horizontalSpan: FractionalSpanExtent(.5)),
+        TestTableViewExColumnConfig(
+            key: 'col3', horizontalSpan: FractionalSpanExtent(.2)),
       ];
       final widths = calculator.calculateColumnWidths(300, columns);
       expect(widths, [90, 150, 60]);

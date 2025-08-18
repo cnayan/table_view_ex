@@ -8,7 +8,10 @@ extension ColorExtensions on Color {
   Color getContrastColor({int maxContrast = 192}) {
     const int minContrast = 128;
 
-    final int y = (0.299 * ((r * 255).round() & 0xff) + 0.587 * ((g * 255).round() & 0xff) + 0.114 * ((b * 255).round() & 0xff)).round(); // luma
+    final int y = (0.299 * ((r * 255).round() & 0xff) +
+            0.587 * ((g * 255).round() & 0xff) +
+            0.114 * ((b * 255).round() & 0xff))
+        .round(); // luma
     int oy = 255 - y; // opposite
     int dy = oy - y; // delta
 

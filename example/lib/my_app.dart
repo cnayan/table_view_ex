@@ -37,7 +37,9 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         body: Actions(
           actions: <Type, Action<Intent>>{
-            TableViewExSortedColumnMovedIntent: TableViewExSortedColumnMovedIntentHandler((int newSortedColumnIndex) {
+            TableViewExSortedColumnMovedIntent:
+                TableViewExSortedColumnMovedIntentHandler(
+                    (int newSortedColumnIndex) {
               // _lastSortedColumn = newSortedColumnIndex;
             }),
           },
@@ -52,7 +54,8 @@ class _MyAppState extends State<MyApp> {
             columnWidthCalculator: DefaultTableViewExWidthCalculator(),
             contentRowsCount: rows.length,
             rowSpanBuilder: (int rowIndex) => const FixedTableSpanExtent(30),
-            contentCellWidgetBuilder: (context, int colIndex, int rowIndex) => _contentCellWidgetBuilder(
+            contentCellWidgetBuilder: (context, int colIndex, int rowIndex) =>
+                _contentCellWidgetBuilder(
               context,
               columnDefs,
               rows,
@@ -61,22 +64,29 @@ class _MyAppState extends State<MyApp> {
             ),
 
             // expand to max content width
-            contentMaxWidthProvider: (colIndex) => _contentMaxWidthCalculator(columnDefs[colIndex], rows),
+            contentMaxWidthProvider: (colIndex) =>
+                _contentMaxWidthCalculator(columnDefs[colIndex], rows),
 
             allowColumnReordering: true,
             // scrollThumbThickness: 100,
 
-            verticalBorderSide: const BorderSide(color: Colors.purple, width: 1.5),
-            horizontalBorderSide: const BorderSide(color: Colors.red, width: 1.5),
-            rowBackgroundColorProvider: (row) => row.isOdd ? Colors.transparent : Colors.grey[200]!,
+            verticalBorderSide:
+                const BorderSide(color: Colors.purple, width: 1.5),
+            horizontalBorderSide:
+                const BorderSide(color: Colors.red, width: 1.5),
+            rowBackgroundColorProvider: (row) =>
+                row.isOdd ? Colors.transparent : Colors.grey[200]!,
             onSortRequested: (int colIndex) {
               final columnDef = columnDefs[colIndex];
               final comparer = columnDef.comparer;
               if (comparer != null) {
                 setState(() {
                   rows.sort((rowA, rowB) {
-                    final aVal = rowA[columnDef.key], bVal = rowB[columnDef.key];
-                    return columnDef.isAscending! ? comparer(aVal, bVal) : comparer(bVal, aVal);
+                    final aVal = rowA[columnDef.key],
+                        bVal = rowB[columnDef.key];
+                    return columnDef.isAscending!
+                        ? comparer(aVal, bVal)
+                        : comparer(bVal, aVal);
                   });
                 });
               }
@@ -104,7 +114,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   /// Find widest cell content in pixels
-  double _contentMaxWidthCalculator(TableViewExColumnConfig columnDef, List<Map<String, String?>> rows) {
+  double _contentMaxWidthCalculator(
+      TableViewExColumnConfig columnDef, List<Map<String, String?>> rows) {
     double maxWidth = 0.0;
     for (int rowIndex = 0; rowIndex < rows.length; rowIndex++) {
       final Map<String, String?> row = rows[rowIndex];

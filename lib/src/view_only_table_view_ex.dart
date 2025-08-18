@@ -120,7 +120,8 @@ class ViewOnlyTableViewEx extends StatefulWidget {
     this.allowColumnReordering = false,
     this.verticalThumbVisibility,
     this.horizontalThumbVisibility,
-  })  : assert(columnDefinitions.isNotEmpty, 'columnDefinitions must not be empty'),
+  })  : assert(columnDefinitions.isNotEmpty,
+            'columnDefinitions must not be empty'),
         assert(contentRowsCount >= 0, 'rowCount must be non-negative');
 
   @override
@@ -144,12 +145,17 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
     return LayoutBuilder(
       builder: (context, constraints) {
         // Calculate width once - translate the span widths to pixel width values
-        _calculatedColumnWidths ??= widget.columnWidthCalculator.calculateColumnWidths(constraints.maxWidth, widget.columnDefinitions);
-        assert(_calculatedColumnWidths?.length == _columnCount, "All column width were not provided");
+        _calculatedColumnWidths ??= widget.columnWidthCalculator
+            .calculateColumnWidths(
+                constraints.maxWidth, widget.columnDefinitions);
+        assert(_calculatedColumnWidths?.length == _columnCount,
+            "All column width were not provided");
 
         final TableCellBuilderDelegate cellBuilder = TableCellBuilderDelegate(
           columnCount: _columnCount,
-          rowCount: _contentRowsCount > 0 ? _contentRowsCount + (widget.showHeader ? 1 : 0) : null,
+          rowCount: _contentRowsCount > 0
+              ? _contentRowsCount + (widget.showHeader ? 1 : 0)
+              : null,
           pinnedRowCount: widget.showHeader ? 1 : 0,
           columnBuilder: (int colIndex) => TableSpan(
             extent: FixedTableSpanExtent(_calculatedColumnWidths![colIndex]),
@@ -160,24 +166,34 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
 
         final tableView = TableView(
           delegate: cellBuilder,
-          verticalDetails: ScrollableDetails.vertical(controller: _verticalScrollController),
-          horizontalDetails: ScrollableDetails.horizontal(controller: _horizontalScrollController),
+          verticalDetails:
+              ScrollableDetails.vertical(controller: _verticalScrollController),
+          horizontalDetails: ScrollableDetails.horizontal(
+              controller: _horizontalScrollController),
         );
 
         // If user doesn't want to see scollbars
-        if (widget.verticalThumbVisibility == false && widget.horizontalThumbVisibility == false) {
+        if (widget.verticalThumbVisibility == false &&
+            widget.horizontalThumbVisibility == false) {
           return tableView;
         }
 
         // Keep some padding for the scrollbars to avoid overlapping on the content
         EdgeInsetsGeometry padding = EdgeInsetsGeometry.zero;
         if (widget.scrollThumbThickness != null) {
-          if (widget.horizontalThumbVisibility == true && widget.verticalThumbVisibility != true) {
-            padding = EdgeInsetsGeometry.only(right: widget.scrollThumbThickness!);
-          } else if (widget.horizontalThumbVisibility == true && widget.verticalThumbVisibility == true) {
-            padding = EdgeInsetsGeometry.only(right: widget.scrollThumbThickness!, bottom: widget.scrollThumbThickness!);
-          } else if (widget.horizontalThumbVisibility != true && widget.verticalThumbVisibility == true) {
-            padding = EdgeInsetsGeometry.only(bottom: widget.scrollThumbThickness!);
+          if (widget.horizontalThumbVisibility == true &&
+              widget.verticalThumbVisibility != true) {
+            padding =
+                EdgeInsetsGeometry.only(right: widget.scrollThumbThickness!);
+          } else if (widget.horizontalThumbVisibility == true &&
+              widget.verticalThumbVisibility == true) {
+            padding = EdgeInsetsGeometry.only(
+                right: widget.scrollThumbThickness!,
+                bottom: widget.scrollThumbThickness!);
+          } else if (widget.horizontalThumbVisibility != true &&
+              widget.verticalThumbVisibility == true) {
+            padding =
+                EdgeInsetsGeometry.only(bottom: widget.scrollThumbThickness!);
           }
         }
 
@@ -212,7 +228,8 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
       // Adjust the row index for the header "row"
       final rowIndex = widget.showHeader ? vicinity.row - 1 : vicinity.row;
 
-      Widget child = widget.contentCellWidgetBuilder(context, vicinity.column, rowIndex);
+      Widget child =
+          widget.contentCellWidgetBuilder(context, vicinity.column, rowIndex);
       wrappedWidget = _buildContentCell(vicinity, child);
     }
 
@@ -237,7 +254,9 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
       alignment: widget.columnDefinitions[vicinity.column].contentAlignment,
       width: _calculatedColumnWidths![vicinity.column],
       decoration: BoxDecoration(
-        color: widget.rowBackgroundColorProvider != null ? widget.rowBackgroundColorProvider!(vicinity.row) : Colors.transparent,
+        color: widget.rowBackgroundColorProvider != null
+            ? widget.rowBackgroundColorProvider!(vicinity.row)
+            : Colors.transparent,
         border: border,
       ),
       child: cell,
@@ -259,21 +278,33 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
   /// It will also handle drag-and-drop reordering of columns, if allowColumnReordering is set to true.
   Widget _buildHeaderCell(TableVicinity vicinity) {
     final colIndex = vicinity.column;
-    final TableViewExColumnConfig columnDef = widget.columnDefinitions[colIndex];
+    final TableViewExColumnConfig columnDef =
+        widget.columnDefinitions[colIndex];
 
-    final backgroundColor = columnDef.headerStyle?.backgroundColor ?? Theme.of(context).textTheme.bodyMedium?.backgroundColor ?? Colors.transparent;
+    final backgroundColor = columnDef.headerStyle?.backgroundColor ??
+        Theme.of(context).textTheme.bodyMedium?.backgroundColor ??
+        Colors.transparent;
     Color contrastingColor = backgroundColor.getContrastColor();
 
-    final fontSize = (Theme.of(context).textTheme.bodyMedium ?? TextStyle(color: contrastingColor)).fontSize ?? 14;
+    final fontSize = (Theme.of(context).textTheme.bodyMedium ??
+                TextStyle(color: contrastingColor))
+            .fontSize ??
+        14;
 
     if (widget.showHeader == true) {
-      assert(columnDef.widgetBuilder != null, "Cannot show header without header widget builder.");
+      assert(columnDef.widgetBuilder != null,
+          "Cannot show header without header widget builder.");
     }
 
-    final Widget? headerWidget = columnDef.widgetBuilder != null ? columnDef.widgetBuilder!() : null;
+    final Widget? headerWidget =
+        columnDef.widgetBuilder != null ? columnDef.widgetBuilder!() : null;
 
     const iconSpacing = 2.0;
-    final IconData? sortIcon = _lastSortedColumn == colIndex ? (columnDef.isAscending ?? true ? Icons.arrow_upward : Icons.arrow_downward) : null;
+    final IconData? sortIcon = _lastSortedColumn == colIndex
+        ? (columnDef.isAscending ?? true
+            ? Icons.arrow_upward
+            : Icons.arrow_downward)
+        : null;
 
     Widget result = GestureDetector(
       onTap: () => _sortEventHandler(columnDef, colIndex),
@@ -366,7 +397,8 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
       );
 
       finalWidget = DragTarget<int>(
-        onWillAcceptWithDetails: (details) => details.data != colIndex && !_isResizing,
+        onWillAcceptWithDetails: (details) =>
+            details.data != colIndex && !_isResizing,
         onAcceptWithDetails: (details) => _rearrangeColumns(colIndex, details),
         builder: (context, candidateData, rejectedData) => result,
       );
@@ -394,7 +426,8 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
 
   /// Puts the column in its place
   void _rearrangeColumns(int colIndex, DragTargetDetails<int> details) {
-    final TableViewExColumnConfig draggedColumn = widget.columnDefinitions.removeAt(details.data);
+    final TableViewExColumnConfig draggedColumn =
+        widget.columnDefinitions.removeAt(details.data);
     widget.columnDefinitions.insert(colIndex, draggedColumn);
     final double colWidth = _calculatedColumnWidths!.removeAt(details.data);
     _calculatedColumnWidths!.insert(colIndex, colWidth);
@@ -415,11 +448,15 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
 
     if (_lastSortedColumn == oldIndex) {
       newSortedColumnIndex = newIndex;
-    } else if (oldIndex < newIndex && _lastSortedColumn! > oldIndex && _lastSortedColumn! <= newIndex) {
+    } else if (oldIndex < newIndex &&
+        _lastSortedColumn! > oldIndex &&
+        _lastSortedColumn! <= newIndex) {
       // A column to the left of the sorted column was moved to the right,
       // shifting the sorted column one position to the left.
       newSortedColumnIndex--;
-    } else if (oldIndex > newIndex && _lastSortedColumn! >= newIndex && _lastSortedColumn! < oldIndex) {
+    } else if (oldIndex > newIndex &&
+        _lastSortedColumn! >= newIndex &&
+        _lastSortedColumn! < oldIndex) {
       // A column to the right of the sorted column was moved to the left,
       // shifting the sorted column one position to the right.
       newSortedColumnIndex++;
@@ -427,7 +464,8 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
 
     if (newSortedColumnIndex != _lastSortedColumn!) {
       _lastSortedColumn = newSortedColumnIndex;
-      Actions.invoke(context, TableViewExSortedColumnMovedIntent(newSortedColumnIndex));
+      Actions.invoke(
+          context, TableViewExSortedColumnMovedIntent(newSortedColumnIndex));
     }
   }
 
@@ -438,9 +476,12 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
     TableVicinity vicinity,
   ) {
     if (widget.contentMaxWidthProvider != null && _contentRowsCount > 0) {
-      Border createLineBorder = _createInternalLineBorder(vicinity.column, widget.showHeader ? 1 : 0);
-      final double maxWidth =
-          widget.contentMaxWidthProvider!(vicinity.column) + createLineBorder.left.width + createLineBorder.right.width + 10; // Add some padding
+      Border createLineBorder =
+          _createInternalLineBorder(vicinity.column, widget.showHeader ? 1 : 0);
+      final double maxWidth = widget.contentMaxWidthProvider!(vicinity.column) +
+          createLineBorder.left.width +
+          createLineBorder.right.width +
+          10; // Add some padding
       setState(() {
         _calculatedColumnWidths![vicinity.column] = maxWidth + 10;
       });
@@ -452,9 +493,13 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
   /// If the border side is [BorderSide.none] or not given, no border will be drawn.
   /// Returns a [Border] object with the appropriate sides set.
   Border _createInternalLineBorder(int colIndex, int rowIndex) {
-    final hBorderSide = rowIndex < _contentRowsCount - 1 ? widget.horizontalBorderSide ?? BorderSide.none : BorderSide.none;
+    final hBorderSide = rowIndex < _contentRowsCount - 1
+        ? widget.horizontalBorderSide ?? BorderSide.none
+        : BorderSide.none;
 
-    final vBorderSide = colIndex < _columnCount - 1 ? widget.verticalBorderSide ?? BorderSide.none : BorderSide.none;
+    final vBorderSide = colIndex < _columnCount - 1
+        ? widget.verticalBorderSide ?? BorderSide.none
+        : BorderSide.none;
 
     return Border(right: vBorderSide, bottom: hBorderSide);
   }
