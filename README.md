@@ -210,6 +210,8 @@ columnWidthCalculator : MyTableViewExWidthCalculator()
 
 Please check the [example folder](./example) which demonstrates various features of the widget.
 
+Example app has been deployed to [https://cnayan.github.io/table_view_ex/](https://cnayan.github.io/table_view_ex/) as well.
+
 ##  Know issues/limitations/caveats
 - Any limitation of `TableView` will impact this control. Kindly check the issues of that package to see if your concern is addressed there.
 
