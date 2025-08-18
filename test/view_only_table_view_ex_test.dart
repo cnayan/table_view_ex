@@ -1283,7 +1283,7 @@ void main() {
 
   // -------------------- NEW ----------------------
 
-  Future<void> _pumpTable(
+  Future<void> pumpTable(
     WidgetTester tester, {
     required List<TableViewExColumnConfig> columns,
     int rows = 3,
@@ -1301,7 +1301,7 @@ void main() {
             columnDefinitions: columns,
             rowSpanBuilder: (i) => FixedSpanExtent(40),
             contentRowsCount: rows,
-            contentCellWidgetBuilder: (ctx, col, row) => Text('r${row}_c${col}', textDirection: TextDirection.ltr),
+            contentCellWidgetBuilder: (ctx, col, row) => Text('r${row}_c$col', textDirection: TextDirection.ltr),
             onSortRequested: onSortRequested,
             columnWidthCalculator: calculator ?? MockTableViewExWidthCalculator(),
             showHeader: showHeader,
@@ -1349,7 +1349,7 @@ void main() {
         ),
       ];
 
-      await _pumpTable(
+      await pumpTable(
         tester,
         columns: cols,
         rows: 2,
@@ -1381,7 +1381,7 @@ void main() {
 
       Color provider(int rowIndex) => rowIndex % 2 == 0 ? Colors.red : Colors.blue;
 
-      await _pumpTable(
+      await pumpTable(
         tester,
         columns: cols,
         rows: 3,
@@ -1432,7 +1432,7 @@ void main() {
       ];
 
       // both false -> no RawScrollbar wrapping
-      await _pumpTable(
+      await pumpTable(
         tester,
         columns: cols,
         verticalThumbVisibility: false,
@@ -1441,7 +1441,7 @@ void main() {
       expect(find.byType(RawScrollbar), findsNothing);
 
       // vertical visible -> RawScrollbar present
-      await _pumpTable(
+      await pumpTable(
         tester,
         columns: cols,
         verticalThumbVisibility: true,
@@ -1456,7 +1456,7 @@ void main() {
         TestTableViewExColumnConfig(key: 'c2', widgetBuilder: () => const Text('H2', textDirection: TextDirection.ltr)),
       ];
 
-      await _pumpTable(tester, columns: cols, rows: 2);
+      await pumpTable(tester, columns: cols, rows: 2);
 
       expect(find.byType(Draggable<int>), findsWidgets);
       expect(find.byType(DragTarget<int>), findsWidgets);
@@ -1469,7 +1469,7 @@ void main() {
         TestTableViewExColumnConfig(key: 'c2', widgetBuilder: () => const Text('H2', textDirection: TextDirection.ltr)),
       ];
 
-      await _pumpTable(tester, columns: cols, rows: 1, calculator: customCalc);
+      await pumpTable(tester, columns: cols, rows: 1, calculator: customCalc);
 
       // ensure TableView present and at least one cell rendered
       expect(find.byType(TableView), findsOneWidget);

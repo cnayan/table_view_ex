@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:table_view_ex/table_view_ex.dart';
 
@@ -19,7 +18,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late List<TableViewExColumnConfig> columnDefs;
   late List<Map<String, String?>> rows;
-  int? _lastSortedColumn;
+  // int? _lastSortedColumn;
 
   @override
   void initState() {
@@ -39,7 +38,7 @@ class _MyAppState extends State<MyApp> {
         body: Actions(
           actions: <Type, Action<Intent>>{
             TableViewExSortedColumnMovedIntent: TableViewExSortedColumnMovedIntentHandler((int newSortedColumnIndex) {
-              _lastSortedColumn = newSortedColumnIndex;
+              // _lastSortedColumn = newSortedColumnIndex;
             }),
           },
           child: ViewOnlyTableViewEx(
