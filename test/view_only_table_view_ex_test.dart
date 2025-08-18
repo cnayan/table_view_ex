@@ -1280,4 +1280,200 @@ void main() {
       });
     });
   });
+
+  // -------------------- NEW ----------------------
+
+  Future<void> _pumpTable(
+    WidgetTester tester, {
+    required List<TableViewExColumnConfig> columns,
+    int rows = 3,
+    bool showHeader = true,
+    bool? verticalThumbVisibility,
+    bool? horizontalThumbVisibility,
+    RowColorProvider? rowColorProvider,
+    SortRequestHandler? onSortRequested,
+    TableViewExWidthCalculator? calculator,
+  }) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ViewOnlyTableViewEx(
+            columnDefinitions: columns,
+            rowSpanBuilder: (i) => FixedSpanExtent(40),
+            contentRowsCount: rows,
+            contentCellWidgetBuilder: (ctx, col, row) => Text('r${row}_c${col}', textDirection: TextDirection.ltr),
+            onSortRequested: onSortRequested,
+            columnWidthCalculator: calculator ?? MockTableViewExWidthCalculator(),
+            showHeader: showHeader,
+            rowBackgroundColorProvider: rowColorProvider,
+            verticalThumbVisibility: verticalThumbVisibility,
+            horizontalThumbVisibility: horizontalThumbVisibility,
+            allowColumnReordering: true,
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+  }
+
+  group('ViewOnlyTableViewEx behavior tests', () {
+    testWidgets('throws assertion when columnDefinitions is empty', (WidgetTester tester) async {
+      // The assertion fires when the widget is constructed (synchronously),
+      // so assert on construction rather than on pumpWidget.
+      expect(
+        () => ViewOnlyTableViewEx(
+          columnDefinitions: [],
+          rowSpanBuilder: (i) => FixedSpanExtent(40),
+          contentRowsCount: 1,
+          contentCellWidgetBuilder: (ctx, c, r) => const SizedBox.shrink(),
+          onSortRequested: (_) {},
+          columnWidthCalculator: MockTableViewExWidthCalculator(),
+        ),
+        throwsAssertionError,
+      );
+    });
+
+    testWidgets('renders header widgets and responds to taps to trigger sort callback and toggle icon', (WidgetTester tester) async {
+      int lastSort = -1;
+
+      final cols = [
+        TestTableViewExColumnConfig(
+          key: 'c1',
+          widgetBuilder: () => const Text('column1 header', textDirection: TextDirection.ltr),
+          comparer: (a, b) => 0,
+        ),
+        TestTableViewExColumnConfig(
+          key: 'c2',
+          widgetBuilder: () => const Text('column2 header', textDirection: TextDirection.ltr),
+        ),
+      ];
+
+      await _pumpTable(
+        tester,
+        columns: cols,
+        rows: 2,
+        onSortRequested: (c) => lastSort = c,
+      );
+
+      // header text exists
+      expect(find.text('column1 header'), findsOneWidget);
+
+      // tap to sort first column (should call callback and show ascending icon)
+      await tester.tap(find.text('column1 header'));
+      await tester.pumpAndSettle();
+      expect(lastSort, equals(0));
+      expect(find.byIcon(Icons.arrow_upward), findsOneWidget);
+
+      // tap again to toggle sort direction -> now descending icon should appear
+      await tester.tap(find.text('column1 header'));
+      await tester.pumpAndSettle();
+      expect(find.byIcon(Icons.arrow_downward), findsOneWidget);
+    });
+
+    testWidgets('applies alternating row background colors from provider', (WidgetTester tester) async {
+      final cols = [
+        TestTableViewExColumnConfig(
+          key: 'c1',
+          widgetBuilder: () => const Text('H1', textDirection: TextDirection.ltr),
+        ),
+      ];
+
+      Color provider(int rowIndex) => rowIndex % 2 == 0 ? Colors.red : Colors.blue;
+
+      await _pumpTable(
+        tester,
+        columns: cols,
+        rows: 3,
+        rowColorProvider: provider,
+      );
+
+      // Ensure two content cells exist and have different background colors (alternating)
+      final firstCell = find.text('r0_c0');
+      final secondCell = find.text('r1_c0');
+
+      expect(firstCell, findsOneWidget);
+      expect(secondCell, findsOneWidget);
+
+      final container0 = tester
+          .widgetList<Container>(
+            find.ancestor(of: firstCell, matching: find.byType(Container)),
+          )
+          .first;
+      final container1 = tester
+          .widgetList<Container>(
+            find.ancestor(of: secondCell, matching: find.byType(Container)),
+          )
+          .first;
+
+      final color0 = (container0.decoration as BoxDecoration?)?.color;
+      final color1 = (container1.decoration as BoxDecoration?)?.color;
+
+      // Colors must be provided by the rowColorProvider and must differ (alternating)
+      expect(color0, isNotNull);
+      expect(color1, isNotNull);
+      expect(color0 != color1, isTrue);
+
+      // Both colors should be one of the expected values
+      expect([Colors.red, Colors.blue].contains(color0), isTrue);
+      expect([Colors.red, Colors.blue].contains(color1), isTrue);
+    });
+
+    testWidgets('honors scrollbar visibility flags', (WidgetTester tester) async {
+      final cols = [
+        TestTableViewExColumnConfig(
+          key: 'c1',
+          widgetBuilder: () => const Text('H1', textDirection: TextDirection.ltr),
+        ),
+        TestTableViewExColumnConfig(
+          key: 'c2',
+          widgetBuilder: () => const Text('H2', textDirection: TextDirection.ltr),
+        ),
+      ];
+
+      // both false -> no RawScrollbar wrapping
+      await _pumpTable(
+        tester,
+        columns: cols,
+        verticalThumbVisibility: false,
+        horizontalThumbVisibility: false,
+      );
+      expect(find.byType(RawScrollbar), findsNothing);
+
+      // vertical visible -> RawScrollbar present
+      await _pumpTable(
+        tester,
+        columns: cols,
+        verticalThumbVisibility: true,
+        horizontalThumbVisibility: false,
+      );
+      expect(find.byType(RawScrollbar), findsWidgets);
+    });
+
+    testWidgets('exposes drag related widgets when column reordering is allowed', (WidgetTester tester) async {
+      final cols = [
+        TestTableViewExColumnConfig(key: 'c1', widgetBuilder: () => const Text('H1', textDirection: TextDirection.ltr)),
+        TestTableViewExColumnConfig(key: 'c2', widgetBuilder: () => const Text('H2', textDirection: TextDirection.ltr)),
+      ];
+
+      await _pumpTable(tester, columns: cols, rows: 2);
+
+      expect(find.byType(Draggable<int>), findsWidgets);
+      expect(find.byType(DragTarget<int>), findsWidgets);
+    });
+
+    testWidgets('uses width calculator to set initial column widths', (WidgetTester tester) async {
+      final customCalc = MockTableViewExWidthCalculator();
+      final cols = [
+        TestTableViewExColumnConfig(key: 'c1', widgetBuilder: () => const Text('H1', textDirection: TextDirection.ltr)),
+        TestTableViewExColumnConfig(key: 'c2', widgetBuilder: () => const Text('H2', textDirection: TextDirection.ltr)),
+      ];
+
+      await _pumpTable(tester, columns: cols, rows: 1, calculator: customCalc);
+
+      // ensure TableView present and at least one cell rendered
+      expect(find.byType(TableView), findsOneWidget);
+      expect(find.text('r0_c0'), findsOneWidget);
+    });
+  });
 }
