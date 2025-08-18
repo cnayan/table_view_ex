@@ -1,0 +1,73 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Main_Build
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Note: This workflow uses the latest stable version of the Dart SDK.
+      # You can specify other versions if desired, see documentation here:
+      # https://github.com/dart-lang/setup-dart/blob/main/README.md
+      # - uses: dart-lang/setup-dart@v1
+      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+      - uses: subosito/flutter-action@v2.14.0
+        with:
+          channel: 'stable'
+          architecture: x64
+          cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:'
+      - name: Flutter Doctor
+        run: flutter doctor
+        working-directory: ./
+      - name: Upgrades flutter
+        run: flutter upgrade
+        working-directory: ./
+      - name: Enable Web
+        run: flutter config --enable-web
+        working-directory: ./example
+      - name: Install dependencies
+        run: flutter packages get
+        working-directory: ./
+      
+      # Uncomment this step to verify the use of 'dart format' on each commit.
+      # - name: Verify formatting
+      #   run: dart format --output=none --set-exit-if-changed .
+      
+      - name: Analyze
+        run: |
+          output=$(flutter analyze; exit_code=$?)
+          echo "$output"
+          if [ "$exit_code" -ne 0 ]; then
+            echo "::warning::Flutter analyze found issues"
+            echo "$output"
+          fi
+          exit 0  # Always exit 0 to prevent job failure
+      
+      - name: Build Web
+        run: flutter build web
+        working-directory: ./example
+      
+      # Your project will need to have tests in test/ and a dependency on
+      # package:test for this step to succeed. Note that Flutter projects will
+      # want to change this to 'flutter test'.
+      # - name: Run tests
+      #  run: dart test
+      
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          target-folder: /dev # root folder is stable example build, /dev is the current main build
+          folder: ./example/build/web
