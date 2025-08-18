@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:table_view_ex/table_view_ex.dart';
 
@@ -39,7 +40,6 @@ class _MyAppState extends State<MyApp> {
           actions: <Type, Action<Intent>>{
             TableViewExSortedColumnMovedIntent: TableViewExSortedColumnMovedIntentHandler((int newSortedColumnIndex) {
               _lastSortedColumn = newSortedColumnIndex;
-              print("_lastSortedColumn is set to: $_lastSortedColumn");
             }),
           },
           child: ViewOnlyTableViewEx(

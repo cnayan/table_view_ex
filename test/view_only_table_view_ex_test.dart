@@ -13,7 +13,10 @@ class MockTableViewExWidthCalculator implements TableViewExWidthCalculator {
     double availableWidth,
     List<TableViewExColumnConfig> columnDefinitions,
   ) {
-    // Simple implementation for testing - distribute width equally
+    if (columnDefinitions.isEmpty) {
+      return [];
+    }
+
     final double columnWidth = availableWidth / columnDefinitions.length;
     return List.generate(columnDefinitions.length, (index) => columnWidth);
   }
@@ -1277,6 +1280,4 @@ void main() {
       });
     });
   });
-
-// --------------- NEW ---------------
 }
