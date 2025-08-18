@@ -14,8 +14,8 @@ class TableViewExColumnConfig {
   /// `cellValue = row[columnConfig.key]`
   final String key;
 
-  /// The label for the column header.
-  /// This is used to display the column name in the header.
+  /// The widget for the column header.
+  /// This is usually used to display the column name in the header.
   final Widget Function()? widgetBuilder;
 
   /// Optional horizontal span for the column.

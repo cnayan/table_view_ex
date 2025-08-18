@@ -12,10 +12,8 @@ import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 import 'table_view_ex_column_config.dart';
 import 'extensions/color_extensions.dart';
 
-// Enum to control the selection behavior of the table.
-enum SelectionType { disabled, row, cell }
-
 typedef RowColorProvider = Color Function(int rowIndex);
+typedef SortRequestHandler = void Function(int colIndex);
 
 /// Extended [TableView] class which provides features:
 /// - Column width change by user
@@ -78,17 +76,18 @@ class ViewOnlyTableViewEx extends StatefulWidget {
 
   /// A function that builds the span extent for each row.
   /// The function receives the row index and returns a [SpanExtent].
-  final SpanExtent Function(int) rowSpanBuilder;
+  final SpanExtent Function(int rowIndex) rowSpanBuilder;
 
   /// The total number of rows in the table.
-  final int rowCount;
+  final int contentRowsCount;
 
   /// A function that builds the widget for each cell.
-  /// The function receives the [BuildContext] and the [TableVicinity] of the cell.
+  /// The function receives the [BuildContext] and the (colIndex, rowIndex) of the cell.
   final Widget Function(
     BuildContext context,
-    TableVicinity vicinity,
-  ) cellWidgetBuilder;
+    int colIndex,
+    int rowIndex,
+  ) contentCellWidgetBuilder;
 
   /// Optional feature: Provide a function that calculates the maximum width of content in that column.
   ///
@@ -96,17 +95,19 @@ class ViewOnlyTableViewEx extends StatefulWidget {
   final double Function(int colIndex)? contentMaxWidthProvider;
 
   /// Optional callback for sorting requests.
-  final void Function(int colIndex)? onSortRequested;
+  final SortRequestHandler? onSortRequested;
 
+  /// An implementation for the calculator of column widths
   final TableViewExWidthCalculator columnWidthCalculator;
 
   ViewOnlyTableViewEx({
     super.key,
     required this.columnDefinitions,
     required this.rowSpanBuilder,
-    required this.rowCount,
-    required this.cellWidgetBuilder,
+    required this.contentRowsCount,
+    required this.contentCellWidgetBuilder,
     required this.onSortRequested,
+    required this.columnWidthCalculator,
     this.contentMaxWidthProvider,
     this.enableColumnWidthResize = true,
     this.scrollThumbColor = Colors.grey,
@@ -119,9 +120,8 @@ class ViewOnlyTableViewEx extends StatefulWidget {
     this.allowColumnReordering = false,
     this.verticalThumbVisibility,
     this.horizontalThumbVisibility,
-    required this.columnWidthCalculator,
   })  : assert(columnDefinitions.isNotEmpty, 'columnDefinitions must not be empty'),
-        assert(rowCount >= 0, 'rowCount must be non-negative');
+        assert(contentRowsCount >= 0, 'rowCount must be non-negative');
 
   @override
   State<ViewOnlyTableViewEx> createState() => _ViewOnlyTableViewExState();
@@ -137,7 +137,7 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
   int? _resizingColumnIndex;
 
   int get _columnCount => widget.columnDefinitions.length;
-  int get _rowCount => widget.rowCount;
+  int get _contentRowsCount => widget.contentRowsCount;
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +149,7 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
 
         final TableCellBuilderDelegate cellBuilder = TableCellBuilderDelegate(
           columnCount: _columnCount,
-          rowCount: _rowCount,
+          rowCount: _contentRowsCount > 0 ? _contentRowsCount + (widget.showHeader ? 1 : 0) : null,
           pinnedRowCount: widget.showHeader ? 1 : 0,
           columnBuilder: (int colIndex) => TableSpan(
             extent: FixedTableSpanExtent(_calculatedColumnWidths![colIndex]),
@@ -209,7 +209,10 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
     if (vicinity.row == 0 && widget.showHeader) {
       wrappedWidget = _buildHeaderCell(vicinity);
     } else {
-      Widget child = widget.cellWidgetBuilder(context, vicinity);
+      // Adjust the row index for the header "row"
+      final rowIndex = widget.showHeader ? vicinity.row - 1 : vicinity.row;
+
+      Widget child = widget.contentCellWidgetBuilder(context, vicinity.column, rowIndex);
       wrappedWidget = _buildContentCell(vicinity, child);
     }
 
@@ -263,20 +266,17 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
 
     final fontSize = (Theme.of(context).textTheme.bodyMedium ?? TextStyle(color: contrastingColor)).fontSize ?? 14;
 
+    if (widget.showHeader == true) {
+      assert(columnDef.widgetBuilder != null, "Cannot show header without header widget builder.");
+    }
+
     final Widget? headerWidget = columnDef.widgetBuilder != null ? columnDef.widgetBuilder!() : null;
 
     const iconSpacing = 2.0;
     final IconData? sortIcon = _lastSortedColumn == colIndex ? (columnDef.isAscending ?? true ? Icons.arrow_upward : Icons.arrow_downward) : null;
 
     Widget result = GestureDetector(
-      onTap: () {
-        widget.onSortRequested?.call(colIndex);
-        if (columnDef.comparer != null) {
-          setState(() {
-            _lastSortedColumn = colIndex;
-          });
-        }
-      },
+      onTap: () => _sortEventHandler(columnDef, colIndex),
       child: Container(
         color: backgroundColor,
         alignment: columnDef.headerStyle?.textAlignment,
@@ -375,6 +375,23 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
     return finalWidget;
   }
 
+  /// A basic 'sort' event handler
+  void _sortEventHandler(TableViewExColumnConfig columnDef, int colIndex) {
+    if (columnDef.comparer != null) {
+      bool isAscendingOrder = true;
+      if (_lastSortedColumn == colIndex && columnDef.isAscending != null) {
+        isAscendingOrder = !columnDef.isAscending!;
+      }
+
+      columnDef.isAscending = isAscendingOrder;
+
+      widget.onSortRequested?.call(colIndex);
+      setState(() {
+        _lastSortedColumn = colIndex;
+      });
+    }
+  }
+
   /// Puts the column in its place
   void _rearrangeColumns(int colIndex, DragTargetDetails<int> details) {
     final TableViewExColumnConfig draggedColumn = widget.columnDefinitions.removeAt(details.data);
@@ -420,7 +437,7 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
     TableViewExColumnConfig columnDef,
     TableVicinity vicinity,
   ) {
-    if (widget.contentMaxWidthProvider != null && _rowCount > 0) {
+    if (widget.contentMaxWidthProvider != null && _contentRowsCount > 0) {
       Border createLineBorder = _createInternalLineBorder(vicinity.column, widget.showHeader ? 1 : 0);
       final double maxWidth =
           widget.contentMaxWidthProvider!(vicinity.column) + createLineBorder.left.width + createLineBorder.right.width + 10; // Add some padding
@@ -435,7 +452,7 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
   /// If the border side is [BorderSide.none] or not given, no border will be drawn.
   /// Returns a [Border] object with the appropriate sides set.
   Border _createInternalLineBorder(int colIndex, int rowIndex) {
-    final hBorderSide = rowIndex < _rowCount - 1 ? widget.horizontalBorderSide ?? BorderSide.none : BorderSide.none;
+    final hBorderSide = rowIndex < _contentRowsCount - 1 ? widget.horizontalBorderSide ?? BorderSide.none : BorderSide.none;
 
     final vBorderSide = colIndex < _columnCount - 1 ? widget.verticalBorderSide ?? BorderSide.none : BorderSide.none;
 

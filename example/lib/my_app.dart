@@ -16,8 +16,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  static const _showHeader = true;
-
   late List<TableViewExColumnConfig> columnDefs;
   late List<Map<String, String?>> rows;
   int? _lastSortedColumn;
@@ -39,8 +37,10 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         body: Actions(
           actions: <Type, Action<Intent>>{
-            TableViewExSortedColumnMovedIntent:
-                TableViewExSortedColumnMovedIntentHandler((int newSortedColumnIndex) => _lastSortedColumn = newSortedColumnIndex),
+            TableViewExSortedColumnMovedIntent: TableViewExSortedColumnMovedIntentHandler((int newSortedColumnIndex) {
+              _lastSortedColumn = newSortedColumnIndex;
+              print("_lastSortedColumn is set to: $_lastSortedColumn");
+            }),
           },
           child: ViewOnlyTableViewEx(
             verticalThumbVisibility: true,
@@ -48,11 +48,18 @@ class _MyAppState extends State<MyApp> {
             scrollThumbColor: Colors.deepPurple,
             scrollThumbThickness: 10.0,
 
+            showHeader: true,
             columnDefinitions: columnDefs,
             columnWidthCalculator: DefaultTableViewExWidthCalculator(),
-            rowCount: rows.length,
+            contentRowsCount: rows.length,
             rowSpanBuilder: (int rowIndex) => const FixedTableSpanExtent(30),
-            cellWidgetBuilder: (context, vicinity) => _cellWidgetBuilder(context, columnDefs, rows, vicinity),
+            contentCellWidgetBuilder: (context, int colIndex, int rowIndex) => _contentCellWidgetBuilder(
+              context,
+              columnDefs,
+              rows,
+              colIndex,
+              rowIndex,
+            ),
 
             // expand to max content width
             contentMaxWidthProvider: (colIndex) => _contentMaxWidthCalculator(columnDefs[colIndex], rows),
@@ -62,31 +69,16 @@ class _MyAppState extends State<MyApp> {
 
             verticalBorderSide: const BorderSide(color: Colors.purple, width: 1.5),
             horizontalBorderSide: const BorderSide(color: Colors.red, width: 1.5),
-            showHeader: _showHeader,
             rowBackgroundColorProvider: (row) => row.isOdd ? Colors.transparent : Colors.grey[200]!,
             onSortRequested: (int colIndex) {
               final columnDef = columnDefs[colIndex];
               final comparer = columnDef.comparer;
-
               if (comparer != null) {
-                bool newState;
-                if (_lastSortedColumn == colIndex && columnDef.isAscending != null) {
-                  // If the same column is clicked again, toggle the sort order
-                  newState = !columnDef.isAscending!;
-                } else {
-                  // If a different column is clicked, sort it in ascending order
-                  newState = true;
-                }
-
-                _lastSortedColumn = colIndex;
-
                 setState(() {
                   rows.sort((rowA, rowB) {
                     final aVal = rowA[columnDef.key], bVal = rowB[columnDef.key];
-                    return newState ? comparer(aVal, bVal) : comparer(bVal, aVal);
+                    return columnDef.isAscending! ? comparer(aVal, bVal) : comparer(bVal, aVal);
                   });
-
-                  columnDef.isAscending = newState;
                 });
               }
             },
@@ -96,19 +88,16 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Widget _cellWidgetBuilder(
+  Widget _contentCellWidgetBuilder(
     BuildContext context,
     List<TableViewExColumnConfig> columnDefs,
     List<Map<String, String?>> rows,
-    TableVicinity vicinity,
+    int colIndex,
+    int rowIndex,
   ) {
-    if (_showHeader && vicinity.row <= 0) {
-      throw Exception('Row index out of bounds: ${vicinity.row}');
-    }
-
-    Map<String, Object?> row = rows[vicinity.row - 1];
+    Map<String, Object?> row = rows[rowIndex];
     return Text(
-      row[columnDefs[vicinity.column].key].toString(),
+      row[columnDefs[colIndex].key].toString(),
       overflow: TextOverflow.ellipsis, // Add ellipsis for overflow
       maxLines: 1, // Ensure ellipsis is at the end
       softWrap: false, // Prevent text from wrapping
@@ -118,7 +107,7 @@ class _MyAppState extends State<MyApp> {
   /// Find widest cell content in pixels
   double _contentMaxWidthCalculator(TableViewExColumnConfig columnDef, List<Map<String, String?>> rows) {
     double maxWidth = 0.0;
-    for (int rowIndex = _showHeader ? 1 : 0; rowIndex < rows.length; rowIndex++) {
+    for (int rowIndex = 0; rowIndex < rows.length; rowIndex++) {
       final Map<String, String?> row = rows[rowIndex];
       String contentAsText;
       if (row[columnDef.key] == null) {
@@ -239,7 +228,7 @@ List<TableViewExColumnConfig> _createColumnDefinitions() {
 /// Create dummy rows data for the table
 List<Map<String, String?>> _createRows() {
   // Generate dummy data rows
-  final List<Map<String, String?>> rows = List.generate(maxRows + 1, (i) {
+  final List<Map<String, String?>> rows = List.generate(maxRows, (i) {
     return {
       'name':
           '${i + 1} Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
