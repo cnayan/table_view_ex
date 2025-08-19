@@ -200,6 +200,10 @@ columnWidthCalculator : MyTableViewExWidthCalculator()
 - `horizontalBorderSide`: Defines the `BorderSide` for the horizontal lines between rows. If omitted, no horizontal lines are drawn.
 - `verticalBorderSide`: Defines the `BorderSide` for the vertical lines between columns. If omitted, no vertical lines are drawn.
 
+### Selection Properties:
+- `selectionMode`: An optional `SelectionMode` enum value (`none`, `cell`, or `row`) that defines the selection behavior. Defaults to `SelectionMode.none`.
+- `selectedRowBackgroundColor`: An optional `Color` that defines the background color of selected row. Only applicable when `selectionMode` is set to `row`. It has no impact if the `selectionMode` is `cell`, as the content widget customization is out of scope of this widget. Check example on how to handle `cell` selection.
+
 ### Core Functionality:
 - `onSortRequested`: An optional callback `void Function(int colIndex)` that is triggered when a header is tapped, signaling a sort request.
 - `columnWidthCalculator`: A **required** instance of a `TableViewExWidthCalculator` implementation, which is responsible for determining the initial widths of the columns. This package comes with a default implementation named as `DefaultTableViewExWidthCalculator` for use.
