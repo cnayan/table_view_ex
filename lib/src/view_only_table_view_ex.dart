@@ -116,7 +116,7 @@ class ViewOnlyTableViewEx extends StatefulWidget {
   final SelectionMode? selectionMode;
 
   /// Option to set the selected widget color, if any
-  final Color? selectionBackgroundColor;
+  final Color? selectedRowBackgroundColor;
 
   ViewOnlyTableViewEx({
     super.key,
@@ -140,7 +140,7 @@ class ViewOnlyTableViewEx extends StatefulWidget {
     this.verticalThumbVisibility,
     this.horizontalThumbVisibility,
     this.selectionMode,
-    this.selectionBackgroundColor,
+    this.selectedRowBackgroundColor,
   })  : assert(columnDefinitions.isNotEmpty,
             'columnDefinitions must not be empty'),
         assert(contentRowsCount >= 0, 'rowCount must be non-negative');
@@ -189,7 +189,7 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
                     _selectedRow != null &&
                     _selectedRow! == rowIndex
                 ? SpanDecoration(
-                    color: widget.selectionBackgroundColor,
+                    color: widget.selectedRowBackgroundColor,
                   )
                 : null,
           ),
@@ -289,7 +289,7 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
         color: widget.selectionMode == SelectionMode.cell &&
                 _selectedRow == vicinity.row &&
                 _selectedColumn == vicinity.column
-            ? widget.selectionBackgroundColor ?? Colors.transparent
+            ? widget.selectedRowBackgroundColor ?? Colors.transparent
             : widget.rowBackgroundColorProvider != null
                 ? widget.rowBackgroundColorProvider!(vicinity.row)
                 : Colors.transparent,

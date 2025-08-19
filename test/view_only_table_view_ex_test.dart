@@ -1369,6 +1369,189 @@ void main() {
         expect(find.byType(ViewOnlyTableViewEx), findsOneWidget);
       });
     });
+
+    group('SelectionMode tests', () {
+      testWidgets('SelectionMode.none should not apply selection background',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: ViewOnlyTableViewEx(
+                columnDefinitions: testColumns,
+                rowSpanBuilder: (index) => const FixedSpanExtent(50),
+                contentRowsCount: 1,
+                contentCellWidgetBuilder: (context, colIndex, rowIndex) =>
+                    Text('Cell $rowIndex-$colIndex'),
+                onSortRequested: (colIndex) {},
+                columnWidthCalculator: mockCalculator,
+                selectionMode: SelectionMode.none,
+                selectedRowBackgroundColor: Colors.blue,
+              ),
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        final cellFinder = find.text('Cell 0-0');
+        expect(cellFinder, findsOneWidget);
+
+        await tester.tap(cellFinder);
+        await tester.pumpAndSettle();
+
+        final container = tester.widget<Container>(
+            find.ancestor(of: cellFinder, matching: find.byType(Container)));
+        final decoration = container.decoration as BoxDecoration?;
+
+        expect(decoration?.color, isNot(Colors.blue));
+      });
+
+      testWidgets('SelectionMode.cell should highlight only the tapped cell',
+          (WidgetTester tester) async {
+        int? _selectedRowIndex, _selectedColIndex;
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Actions(
+                actions: <Type, Action<Intent>>{
+                  TableViewExCellSelectionChangeIntent:
+                      MockTableViewExCellSelectionChangeIntentHandler(
+                          (int? rowIndex, int? colIndex) {
+                    _selectedRowIndex = rowIndex;
+                    _selectedColIndex = colIndex;
+                  }),
+                },
+                child: ViewOnlyTableViewEx(
+                  columnDefinitions: testColumns,
+                  rowSpanBuilder: (index) => const FixedSpanExtent(50),
+                  contentRowsCount: 2,
+                  contentCellWidgetBuilder: (context, colIndex, rowIndex) =>
+                      Text('Cell $rowIndex-$colIndex'),
+                  onSortRequested: (colIndex) {},
+                  columnWidthCalculator: mockCalculator,
+                  selectionMode: SelectionMode.cell,
+                  selectedRowBackgroundColor: Colors.blue,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        // Tap cell 0-0
+        final cell00Finder = find.text('Cell 0-0');
+        await tester.tap(cell00Finder);
+        await tester.pumpAndSettle();
+
+        expect(_selectedRowIndex, 0);
+        expect(_selectedColIndex, 0);
+
+        // Verify cell 0-0 is highlighted
+        Container container00 = tester.widget<Container>(
+            find.ancestor(of: cell00Finder, matching: find.byType(Container)));
+        BoxDecoration? decoration00 = container00.decoration as BoxDecoration?;
+        expect(decoration00?.color, Colors.blue);
+
+        // Verify cell 0-1 is not highlighted
+        final cell01Finder = find.text('Cell 0-1');
+        Container container01 = tester.widget<Container>(
+            find.ancestor(of: cell01Finder, matching: find.byType(Container)));
+        BoxDecoration? decoration01 = container01.decoration as BoxDecoration?;
+        expect(decoration01?.color, isNot(Colors.blue));
+
+        // Tap cell 1-0
+        final cell10Finder = find.text('Cell 1-0');
+        await tester.tap(cell10Finder);
+        await tester.pumpAndSettle();
+
+        // Verify cell 0-0 is no longer highlighted
+        container00 = tester.widget<Container>(
+            find.ancestor(of: cell00Finder, matching: find.byType(Container)));
+        decoration00 = container00.decoration as BoxDecoration?;
+        expect(decoration00?.color, isNot(Colors.blue));
+
+        // Verify cell 1-0 is highlighted
+        Container container10 = tester.widget<Container>(
+            find.ancestor(of: cell10Finder, matching: find.byType(Container)));
+        BoxDecoration? decoration10 = container10.decoration as BoxDecoration?;
+        expect(decoration10?.color, Colors.blue);
+      });
+
+      testWidgets('SelectionMode.row should highlight the entire row',
+          (WidgetTester tester) async {
+        int? _selectedRowIndex, _selectedColIndex;
+        const rowsCount = 2;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Actions(
+                actions: <Type, Action<Intent>>{
+                  TableViewExCellSelectionChangeIntent:
+                      MockTableViewExCellSelectionChangeIntentHandler(
+                          (int? rowIndex, int? colIndex) {
+                    _selectedRowIndex = rowIndex;
+                    _selectedColIndex = colIndex;
+                  }),
+                },
+                child: ViewOnlyTableViewEx(
+                  columnDefinitions: testColumns,
+                  rowSpanBuilder: (index) => const FixedSpanExtent(50),
+                  contentRowsCount: rowsCount,
+                  contentCellWidgetBuilder: (context, colIndex, rowIndex) =>
+                      Text('Cell $rowIndex-$colIndex'),
+                  onSortRequested: (colIndex) {},
+                  columnWidthCalculator: mockCalculator,
+                  selectionMode: SelectionMode.row,
+                  selectedRowBackgroundColor: Colors.green,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        // Tap cell 0-0
+        final cell00Finder = find.text('Cell 0-0');
+        await tester.tap(cell00Finder);
+        await tester.pumpAndSettle();
+
+        expect(_selectedRowIndex, 0);
+        expect(_selectedColIndex, 0);
+
+        for (int r = 0; r < rowsCount; r++) {
+          for (int i = 0; i < testColumns.length; i++) {
+            final cellFinder = find.text('Cell $r-$i');
+            Container container = tester.widget<Container>(find.ancestor(
+                of: cellFinder, matching: find.byType(Container)));
+            BoxDecoration? decoration = container.decoration as BoxDecoration?;
+            // Verify rows' containers are not highlighted
+            expect(decoration?.color, isNot(Colors.green));
+          }
+        }
+
+        // Tap cell 1-1
+        final cell11Finder = find.text('Cell 1-1');
+        await tester.tap(cell11Finder);
+        await tester.pumpAndSettle();
+
+        expect(_selectedRowIndex, 1);
+        expect(_selectedColIndex, 1);
+
+        for (int r = 0; r < rowsCount; r++) {
+          for (int i = 0; i < testColumns.length; i++) {
+            final cellFinder = find.text('Cell $r-$i');
+            Container container = tester.widget<Container>(find.ancestor(
+                of: cellFinder, matching: find.byType(Container)));
+            BoxDecoration? decoration = container.decoration as BoxDecoration?;
+            // Verify rows' containers are not highlighted
+            expect(decoration?.color, isNot(Colors.green));
+          }
+        }
+      });
+    });
   });
 
   // -------------------- NEW ----------------------
@@ -1383,6 +1566,8 @@ void main() {
     RowColorProvider? rowColorProvider,
     SortRequestHandler? onSortRequested,
     TableViewExWidthCalculator? calculator,
+    SelectionMode? selectionMode,
+    Color? selectionBackgroundColor,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
@@ -1401,6 +1586,8 @@ void main() {
             verticalThumbVisibility: verticalThumbVisibility,
             horizontalThumbVisibility: horizontalThumbVisibility,
             allowColumnReordering: true,
+            selectionMode: selectionMode,
+            selectedRowBackgroundColor: selectionBackgroundColor,
           ),
         ),
       ),
@@ -1594,4 +1781,26 @@ void main() {
       expect(find.text('r0_c0'), findsOneWidget);
     });
   });
+}
+
+class MockTableViewExSortedColumnMovedIntentHandler
+    extends Action<TableViewExSortedColumnMovedIntent> {
+  final void Function(int newSortedColumnIndex) onNotified;
+
+  MockTableViewExSortedColumnMovedIntentHandler(this.onNotified);
+
+  @override
+  void invoke(covariant TableViewExSortedColumnMovedIntent intent) =>
+      onNotified(intent.newSortedColumnIndex);
+}
+
+class MockTableViewExCellSelectionChangeIntentHandler
+    extends Action<TableViewExCellSelectionChangeIntent> {
+  final void Function(int? rowIndex, int? colIndex) onNotified;
+
+  MockTableViewExCellSelectionChangeIntentHandler(this.onNotified);
+
+  @override
+  void invoke(covariant TableViewExCellSelectionChangeIntent intent) =>
+      onNotified(intent.rowIndex, intent.colIndex);
 }

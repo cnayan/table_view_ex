@@ -90,7 +90,7 @@ class _MyAppState extends State<MyApp> {
                 row.isOdd ? Colors.transparent : Colors.grey[200]!,
 
             selectionMode: SelectionMode.cell,
-            selectionBackgroundColor: Colors.purpleAccent,
+            selectedRowBackgroundColor: Colors.purpleAccent,
 
             onSortRequested: (int colIndex) {
               final columnDef = columnDefs[colIndex];
