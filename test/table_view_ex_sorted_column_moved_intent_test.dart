@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:table_view_ex/src/table_view_ex_column_re_arrangement_intent.dart';
+import 'package:table_view_ex/src/table_view_ex_sorted_column_moved_intent.dart';
 
 void main() {
   group('TableViewExSortedColumnMovedIntent', () {
@@ -36,6 +36,11 @@ void main() {
     test('should work as Intent type', () {
       const intent = TableViewExSortedColumnMovedIntent(1);
       expect(intent, isA<Intent>());
+    });
+
+    test('should create non-const instance', () {
+      final intent = TableViewExSortedColumnMovedIntent(10);
+      expect(intent.newSortedColumnIndex, equals(10));
     });
   });
 }

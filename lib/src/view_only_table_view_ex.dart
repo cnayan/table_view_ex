@@ -5,7 +5,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:table_view_ex/src/table_view_ex_column_re_arrangement_intent.dart';
+import 'package:table_view_ex/src/table_view_ex_sorted_column_moved_intent.dart';
 import 'package:table_view_ex/src/table_view_ex_width_calculator.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
