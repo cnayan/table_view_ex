@@ -1,6 +1,6 @@
 name: table_view_ex
 description: A more feature rich data table control built on TableView with sortable, resizable and rearrangeable headers and customized styling
-version: 0.1.2
+version: 0.1.3
 homepage: https://github.com/cnayan/table_view_ex
 repository: https://github.com/cnayan/table_view_ex
 
