@@ -74,6 +74,11 @@ class ViewOnlyTableViewEx extends StatefulWidget {
   /// The width of the divider line used for resizing columns.
   final double? resizingSeparatorWidth;
 
+  /// The color of the divider line used for resizing columns.
+  ///
+  /// Default is null.
+  final Color? resizingSeparatorColor;
+
   /// A function that builds the span extent for each row.
   /// The function receives the row index and returns a [SpanExtent].
   final SpanExtent Function(int rowIndex) rowSpanBuilder;
@@ -112,7 +117,8 @@ class ViewOnlyTableViewEx extends StatefulWidget {
     this.enableColumnWidthResize = true,
     this.scrollThumbColor = Colors.grey,
     this.scrollThumbThickness = 6,
-    this.resizingSeparatorWidth = 3.0,
+    this.resizingSeparatorWidth = 1.9,
+    this.resizingSeparatorColor,
     this.showHeader = false,
     this.horizontalBorderSide,
     this.verticalBorderSide,
@@ -370,7 +376,7 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
                 cursor: SystemMouseCursors.resizeLeftRight,
                 child: Container(
                   width: widget.resizingSeparatorWidth ?? 3.0,
-                  color: Colors.transparent,
+                  color: widget.resizingSeparatorColor ?? Colors.transparent,
                 ),
               ),
             ),
