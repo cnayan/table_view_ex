@@ -11,6 +11,13 @@ import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
 import 'table_view_ex_column_config.dart';
 import 'extensions/color_extensions.dart';
+import 'table_view_ex_cell_selection_change_intent.dart';
+
+enum SelectionMode {
+  none,
+  cell,
+  row,
+}
 
 typedef RowColorProvider = Color Function(int rowIndex);
 typedef SortRequestHandler = void Function(int colIndex);
@@ -105,6 +112,12 @@ class ViewOnlyTableViewEx extends StatefulWidget {
   /// An implementation for the calculator of column widths
   final TableViewExWidthCalculator columnWidthCalculator;
 
+  /// Option to set the selection style, if any
+  final SelectionMode? selectionMode;
+
+  /// Option to set the selected widget color, if any
+  final Color? selectionBackgroundColor;
+
   ViewOnlyTableViewEx({
     super.key,
     required this.columnDefinitions,
@@ -126,6 +139,8 @@ class ViewOnlyTableViewEx extends StatefulWidget {
     this.allowColumnReordering = false,
     this.verticalThumbVisibility,
     this.horizontalThumbVisibility,
+    this.selectionMode,
+    this.selectionBackgroundColor,
   })  : assert(columnDefinitions.isNotEmpty,
             'columnDefinitions must not be empty'),
         assert(contentRowsCount >= 0, 'rowCount must be non-negative');
@@ -145,6 +160,8 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
 
   int get _columnCount => widget.columnDefinitions.length;
   int get _contentRowsCount => widget.contentRowsCount;
+
+  int? _selectedRow, _selectedColumn;
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +183,16 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
           columnBuilder: (int colIndex) => TableSpan(
             extent: FixedTableSpanExtent(_calculatedColumnWidths![colIndex]),
           ),
-          rowBuilder: (index) => Span(extent: widget.rowSpanBuilder(index)),
+          rowBuilder: (rowIndex) => Span(
+            extent: widget.rowSpanBuilder(rowIndex),
+            backgroundDecoration: widget.selectionMode == SelectionMode.row &&
+                    _selectedRow != null &&
+                    _selectedRow! == rowIndex
+                ? SpanDecoration(
+                    color: widget.selectionBackgroundColor,
+                  )
+                : null,
+          ),
           cellBuilder: _cellBuilder,
         );
 
@@ -260,13 +286,39 @@ class _ViewOnlyTableViewExState extends State<ViewOnlyTableViewEx> {
       alignment: widget.columnDefinitions[vicinity.column].contentAlignment,
       width: _calculatedColumnWidths![vicinity.column],
       decoration: BoxDecoration(
-        color: widget.rowBackgroundColorProvider != null
-            ? widget.rowBackgroundColorProvider!(vicinity.row)
-            : Colors.transparent,
+        color: widget.selectionMode == SelectionMode.cell &&
+                _selectedRow == vicinity.row &&
+                _selectedColumn == vicinity.column
+            ? widget.selectionBackgroundColor ?? Colors.transparent
+            : widget.rowBackgroundColorProvider != null
+                ? widget.rowBackgroundColorProvider!(vicinity.row)
+                : Colors.transparent,
         border: border,
       ),
       child: cell,
     );
+
+    if (widget.selectionMode == SelectionMode.row ||
+        widget.selectionMode == SelectionMode.cell) {
+      result = GestureDetector(
+        onTap: () {
+          if (_selectedRow != vicinity.row ||
+              _selectedColumn != vicinity.column) {
+            setState(() {
+              _selectedRow = vicinity.row;
+              _selectedColumn = vicinity.column;
+            });
+
+            Actions.invoke(
+                context,
+                TableViewExCellSelectionChangeIntent(
+                    widget.showHeader ? _selectedRow! - 1 : _selectedRow,
+                    _selectedColumn));
+          }
+        },
+        child: result,
+      );
+    }
 
     return result;
   }

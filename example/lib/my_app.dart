@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:table_view_ex/table_view_ex.dart';
+import 'package:table_view_ex_example/table_view_ex_cell_selection_change_intent_handler.dart';
 
 import 'table_view_ex_sorted_column_moved_intent_handler.dart';
 
@@ -19,6 +20,7 @@ class _MyAppState extends State<MyApp> {
   late List<TableViewExColumnConfig> columnDefs;
   late List<Map<String, String?>> rows;
   // int? _lastSortedColumn;
+  int? _selectedRowIndex, _selectedColIndex;
 
   @override
   void initState() {
@@ -42,6 +44,14 @@ class _MyAppState extends State<MyApp> {
                     (int newSortedColumnIndex) {
               // _lastSortedColumn = newSortedColumnIndex;
             }),
+            TableViewExCellSelectionChangeIntent:
+                TableViewExCellSelectionChangeIntentHandler(
+                    (int? rowIndex, int? colIndex) {
+              setState(() {
+                _selectedRowIndex = rowIndex;
+                _selectedColIndex = colIndex;
+              });
+            }),
           },
           child: ViewOnlyTableViewEx(
             verticalThumbVisibility: true,
@@ -63,6 +73,8 @@ class _MyAppState extends State<MyApp> {
               rowIndex,
             ),
 
+            resizingSeparatorColor: Colors.black,
+
             // expand to max content width
             contentMaxWidthProvider: (colIndex) =>
                 _contentMaxWidthCalculator(columnDefs[colIndex], rows),
@@ -76,6 +88,10 @@ class _MyAppState extends State<MyApp> {
                 const BorderSide(color: Colors.red, width: 1.5),
             rowBackgroundColorProvider: (row) =>
                 row.isOdd ? Colors.transparent : Colors.grey[200]!,
+
+            selectionMode: SelectionMode.cell,
+            selectionBackgroundColor: Colors.purpleAccent,
+
             onSortRequested: (int colIndex) {
               final columnDef = columnDefs[colIndex];
               final comparer = columnDef.comparer;
@@ -105,12 +121,18 @@ class _MyAppState extends State<MyApp> {
     int rowIndex,
   ) {
     Map<String, Object?> row = rows[rowIndex];
-    return Text(
+
+    final text = Text(
       row[columnDefs[colIndex].key].toString(),
       overflow: TextOverflow.ellipsis, // Add ellipsis for overflow
       maxLines: 1, // Ensure ellipsis is at the end
       softWrap: false, // Prevent text from wrapping
+      style: rowIndex == _selectedRowIndex && colIndex == _selectedColIndex
+          ? TextStyle(color: Colors.white)
+          : null,
     );
+
+    return text;
   }
 
   /// Find widest cell content in pixels

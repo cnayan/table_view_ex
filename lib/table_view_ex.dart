@@ -11,4 +11,5 @@ export 'src/table_view_ex_header_style.dart';
 export 'src/table_view_ex_width_calculator.dart';
 export 'src/default_table_view_ex_width_calculator.dart';
 export 'src/table_view_ex_column_re_arrangement_intent.dart';
+export 'src/table_view_ex_cell_selection_change_intent.dart';
 export 'src/view_only_table_view_ex.dart';
